@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="tr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Finansal Raporlar</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<div class="dashboard-container">
+    <main class="main-content">
+        <h1>Muhasebe Raporu</h1>
+
+        <table border="1">
+            <thead>
+            <tr>
+                <th>Tarih</th>
+                <th>Ad Soyad</th>
+                <th>Tutar</th>
+                <th>Ödeme Tipi</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="row : ${muhasebeRaporu}">
+                <td th:text="${row.get('OdemeTarihi')}"></td>
+                <td th:text="${row.get('AdSoyad')}"></td>
+                <td th:text="${row.get('Tutar')}"></td>
+                <td th:text="${row.get('OdemeTipi')}"></td>
+            </tr>
+            </tbody>
+        </table>
+        <br>
+        <a href="/odemeler">Geri Dön</a>
+    </main>
+</div>
+</body>
+</html>

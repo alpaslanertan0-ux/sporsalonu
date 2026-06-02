@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="tr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ayarlar - FitTakip</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<div class="dashboard-container">
+
+    <aside class="sidebar">
+        <div class="logo">
+            <h2>DriFit</h2>
+        </div>
+        <nav class="menu">
+            <a href="/">Ana Sayfa</a>
+            <a href="/uyeler">Üye Listesi</a>
+            <a href="/kayit">Yeni Üye Kaydı</a>
+            <a href="/odemeler">Ödemeler</a>
+            <a href="/ayarlar" class="active">Ayarlar</a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <header class="top-header" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1>Sistem Ayarları</h1>
+
+            <div class="header-right" style="display: flex; align-items: center; gap: 20px;">
+                <div class="user-profile" style="color: #333; font-weight: 500; font-size: 15px;">
+                        <span th:if="${session.oturumKullanici != null}">
+                            👤 <span th:text="${session.oturumKullanici.kullaniciAdi} + ' Profili'">Admin Profili</span>
+                        </span>
+                </div>
+                <a th:if="${session.oturumKullanici != null}" th:href="@{/logout}" style="background-color: #dc3545; color: white; text-decoration: none; padding: 8px 16px; border-radius: 6px; font-weight: bold; font-size: 14px; box-shadow: 0 2px 4px rgba(220, 53, 69, 0.3); display: flex; align-items: center; gap: 5px;">
+                    Çıkış Yap
+                </a>
+            </div>
+        </header>
+
+        <div class="content-area">
+
+            <div th:if="${hataMesaji}" style="color: #721c24; background-color: #f8d7da; border: 1px solid #f5c6cb; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+                <span th:text="${hataMesaji}"></span>
+            </div>
+
+            <div th:if="${basariMesaji}" style="color: #155724; background-color: #d4edda; border: 1px solid #c3e6cb; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+                <span th:text="${basariMesaji}"></span>
+            </div>
+
+            <div class="settings-grid">
+
+                <div class="card">
+                    <h2 class="form-title">Genel Bilgiler</h2>
+                    <p class="form-subtitle">Spor salonunun temel iletişim bilgileri.</p>
+
+                    <form th:action="@{/ayarlar/genel-bilgiler}" method="POST">
+                        <div class="form-group" style="margin-bottom: 15px;">
+                            <label>Salon Adı</label>
+                            <input type="text" name="salonAdi" th:value="${sistemAyarlari.salonAdi}" required>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 15px;">
+                            <label>Telefon</label>
+                            <input type="text" name="telefon" th:value="${sistemAyarlari.telefon}" required>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 20px;">
+                            <label>Adres</label>
+                            <input type="text" name="adres" th:value="${sistemAyarlari.adres}" required>
+                        </div>
+                        <button type="submit" class="btn-primary" style="width: 100%;">Bilgileri Güncelle</button>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <h2 class="form-title">Şifre Değiştir</h2>
+                    <p class="form-subtitle">Yönetici giriş şifrenizi buradan güncelleyebilirsiniz.</p>
+
+                    <form th:action="@{/ayarlar/sifre-degistir}" method="POST">
+                        <div class="form-group" style="margin-bottom: 15px;">
+                            <label>Mevcut Şifre</label>
+                            <input type="password" name="mevcutSifre" required>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 15px;">
+                            <label>Yeni Şifre</label>
+                            <input type="password" name="yeniSifre" required>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 20px;">
+                            <label>Yeni Şifre (Tekrar)</label>
+                            <input type="password" name="yeniSifreTekrar" required>
+                        </div>
+                        <button type="submit" class="btn-primary" style="width: 100%;">Şifreyi Güncelle</button>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <h2 class="form-title">Sistem Tercihleri</h2>
+                    <p class="form-subtitle">Uygulama içi bildirim ve yedekleme ayarları.</p>
+
+                    <form th:action="@{/ayarlar/sistem-tercihleri}" method="POST">
+
+                        <div class="setting-row">
+                            <div>
+                                <strong>Üyelik Bitiş Hatırlatıcı</strong>
+                                <p style="font-size: 13px; color: #6B7280;">Bitişine 3 gün kalan üyeleri dashboard'da göster.</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" name="uyelikBitisHatirlatici"
+                                       th:checked="${sistemAyarlari.uyelikBitisHatirlatici}"
+                                       onchange="this.form.submit()">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="setting-row">
+                            <div>
+                                <strong>Otomatik Veritabanı Yedeği</strong>
+                                <p style="font-size: 13px; color: #6B7280;">Her pazar gecesi veritabanı yedeği al.</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" name="otomatikYedekleme"
+                                       th:checked="${sistemAyarlari.otomatikYedekleme}"
+                                       onchange="this.form.submit()">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+
+                    </form>
+                </div>
+
+            </div>
+
+        </div>
+    </main>
+
+</div>
+</body>
+</html>

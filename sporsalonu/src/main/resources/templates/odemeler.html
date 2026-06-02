@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="tr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ödemeler - FitTakip</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<div class="dashboard-container">
+
+    <aside class="sidebar">
+        <div class="logo">
+            <h2>DriFit</h2>
+        </div>
+        <nav class="menu">
+            <a href="/">Ana Sayfa</a>
+            <a href="/uyeler">Üye Listesi</a>
+            <a href="/kayit">Yeni Üye Kaydı</a>
+            <a href="/odemeler" class="active">Ödemeler</a>
+            <a href="/ayarlar">Ayarlar</a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <header class="top-header" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1>Finans ve Ödemeler</h1>
+
+            <div class="header-right" style="display: flex; align-items: center; gap: 20px;">
+                <div class="user-profile" style="color: #333; font-weight: 500; font-size: 15px;">
+                    <span th:if="${session.oturumKullanici != null}">
+                        👤 <span th:text="${session.oturumKullanici.kullaniciAdi} + ' Profili'">Admin Profili</span>
+                    </span>
+                </div>
+                <a th:if="${session.oturumKullanici != null}" th:href="@{/logout}" style="background-color: #dc3545; color: white; text-decoration: none; padding: 8px 16px; border-radius: 6px; font-weight: bold; font-size: 14px; box-shadow: 0 2px 4px rgba(220, 53, 69, 0.3); display: flex; align-items: center; gap: 5px;">
+                    Çıkış Yap
+                </a>
+            </div>
+        </header>
+
+        <div class="content-area">
+
+            <div class="stats-grid payment-stats">
+                <div class="stat-card border-green">
+                    <div class="stat-title">Bu Ay Tahsil Edilen</div>
+                    <div class="stat-value text-green" th:text="'₺' + ${buAyTahsilat}">₺0</div>
+                </div>
+                <div class="stat-card border-red">
+                    <div class="stat-title">Bekleyen Ödemeler</div>
+                    <div class="stat-value text-red" th:text="'₺' + ${bekleyenTahsilat}">₺0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">Geciken Üye Sayısı</div>
+                    <div class="stat-value" th:text="${gecikenSayisi}">0</div>
+                </div>
+            </div>
+
+            <div class="card" style="margin-bottom: 24px; padding: 20px;">
+                <h3 style="margin-bottom: 16px; color: #333;">Yeni Ödeme Al</h3>
+
+                <form th:action="@{/odeme-kaydet}" method="post" style="display: flex; gap: 20px; align-items: flex-end; flex-wrap: wrap;">
+
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                        <label style="font-size: 14px; font-weight: 600; color: #555;">Üye Seçin</label>
+                        <select name="abonelik.abonelikId" required style="padding: 10px; border: 1px solid #ddd; border-radius: 6px; width: 200px; outline: none; background: white;">
+                            <option value="" disabled selected>-- Lütfen Seçin --</option>
+                            <option th:each="ab : ${abonelikler}" th:value="${ab.abonelikId}" th:text="${ab.uye.adSoyad}"></option>
+                        </select>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                        <label style="font-size: 14px; font-weight: 600; color: #555;">Tutar (₺)</label>
+                        <input type="number" step="0.01" name="tutar" required style="padding: 10px; border: 1px solid #ddd; border-radius: 6px; width: 150px; outline: none;">
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                        <label style="font-size: 14px; font-weight: 600; color: #555;">Ödeme Tipi</label>
+                        <select name="odemeTipi" required style="padding: 10px; border: 1px solid #ddd; border-radius: 6px; width: 180px; outline: none; background: white;">
+                            <option value="Kredi Karti">Kredi Kartı</option>
+                            <option value="Nakit">Nakit</option>
+                            <option value="Havale">Havale/EFT</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <button type="submit" class="btn-primary" style="padding: 10px 24px; font-size: 14px; cursor: pointer; border: none; border-radius: 6px;">Kaydet</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="card table-card">
+                <div class="card-header list-header">
+                    <h3>Son Ödeme İşlemleri</h3>
+                    <div class="table-actions">
+                        <input type="text" id="aramaKutusu" placeholder="Üye adı ile ara..." class="search-input">
+                    </div>
+                </div>
+
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>İşlem No</th>
+                            <th>Üye Adı</th>
+                            <th>Tarih</th>
+                            <th>Tutar</th>
+                            <th>Ödeme Tipi</th>
+                            <th>Durum</th>
+                            <th>İşlem</th>
+                        </tr>
+                        </thead>
+                        <tbody id="odemeTabloGovdesi">
+                        <tr th:each="odeme : ${odemeler}">
+
+                            <td th:text="'#TRX-' + ${odeme.odemeId}">#TRX-982</td>
+
+                            <td th:text="${odeme.abonelik.uye.adSoyad}">Ahmet Yılmaz</td>
+
+                            <td th:text="${#temporals.format(odeme.odemeTarihi, 'dd.MM.yyyy')}">12.05.2026</td>
+
+                            <td th:text="'₺' + ${odeme.tutar}">₺4.000</td>
+
+                            <td th:text="${odeme.odemeTipi}">Kredi Kartı</td>
+
+                            <td>
+                                <span class="badge badge-success" th:if="${odeme.odemeTarihi != null}">Ödendi</span>
+                                <span class="badge badge-warning" th:if="${odeme.odemeTarihi == null}">Bekliyor</span>
+                            </td>
+
+                            <td>
+                                <button class="btn-action"
+                                        onclick="makbuzYazdir(this)"
+                                        th:data-id="${odeme.odemeId}"
+                                        th:data-isim="${odeme.abonelik.uye.adSoyad}"
+                                        th:data-tutar="${odeme.tutar}"
+                                        th:data-tarih="${#temporals.format(odeme.odemeTarihi, 'dd.MM.yyyy')}">
+                                    Makbuz
+                                </button>
+
+                                <a th:href="@{/odemeler/sil/{id}(id=${odeme.odemeId})}"
+                                   class="btn-action"
+                                   style="background-color: #ff4d4d; color: white; text-decoration: none; padding: 6px 12px; border-radius: 6px; margin-left: 5px; font-size: 13px;"
+                                   onclick="return confirm('Bu ödemeyi silmek istediğinize emin misiniz? Bu işlem geri alınamaz!');">
+                                    Sil
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+</div>
+
+<script>
+    document.getElementById('aramaKutusu').addEventListener('input', function(e) {
+        const arananKelime = e.target.value.toLowerCase();
+        const satirlar = document.querySelectorAll('#odemeTabloGovdesi tr');
+        satirlar.forEach(satir => {
+            const satirMetni = satir.textContent.toLowerCase();
+            if(satirMetni.includes(arananKelime)) {
+                satir.style.display = '';
+            } else {
+                satir.style.display = 'none';
+            }
+        });
+    });
+
+    function makbuzYazdir(buton) {
+        const id = buton.getAttribute('data-id');
+        const isim = buton.getAttribute('data-isim');
+        const tutar = buton.getAttribute('data-tutar');
+        const tarih = buton.getAttribute('data-tarih');
+
+        const makbuzPenceresi = window.open('', '_blank', 'width=500,height=500');
+
+        makbuzPenceresi.document.write(`
+            <html>
+            <head>
+                <title>Makbuz #TRX-${id}</title>
+                <style>
+                    body { font-family: 'Courier New', Courier, monospace; color: #333; }
+                    .makbuz-kutu { border: 2px dashed #999; padding: 20px; width: 350px; margin: 20px auto; }
+                    h2, h3 { text-align: center; margin: 5px 0; }
+                    .satir { display: flex; justify-content: space-between; margin: 10px 0; font-size: 14px; }
+                    .alt-bilgi { text-align: center; font-size: 12px; margin-top: 20px; color: #666; }
+                </style>
+            </head>
+            <body>
+                <div class="makbuz-kutu">
+                    <h2>DriFit Spor Salonu</h2>
+                    <h3>Tahsilat Makbuzu</h3>
+                    <hr style="border-top: 1px dashed #999;">
+
+                    <div class="satir"><span>İşlem No:</span> <strong>#TRX-${id}</strong></div>
+                    <div class="satir"><span>Tarih:</span> <strong>${tarih}</strong></div>
+                    <div class="satir"><span>Üye Adı:</span> <strong>${isim}</strong></div>
+                    <div class="satir"><span>Tutar:</span> <strong>₺${tutar}</strong></div>
+
+                    <hr style="border-top: 1px dashed #999;">
+                    <div class="alt-bilgi">Bizi tercih ettiğiniz için teşekkür ederiz.<br>Sporla kalın!</div>
+                </div>
+            </body>
+            </html>
+        `);
+
+        makbuzPenceresi.document.close();
+        setTimeout(() => {
+            makbuzPenceresi.print();
+        }, 250);
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="tr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Üye Listesi - FitTakip</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<div class="dashboard-container">
+
+    <aside class="sidebar">
+        <div class="logo">
+            <h2>DriFit</h2>
+        </div>
+        <nav class="menu">
+            <a href="/">Ana Sayfa</a>
+            <a href="/uyeler" class="active">Üye Listesi</a>
+            <a href="/kayit">Yeni Üye Kaydı</a>
+            <a href="/odemeler">Ödemeler</a>
+            <a href="/ayarlar">Ayarlar</a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <header class="top-header" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1>Üye Yönetimi</h1>
+
+            <div class="header-right" style="display: flex; align-items: center; gap: 20px;">
+                <div class="user-profile" style="color: #333; font-weight: 500; font-size: 15px;">
+                    <span th:if="${session.oturumKullanici != null}">
+                        👤 <span th:text="${session.oturumKullanici.kullaniciAdi} + ' Profili'">Admin Profili</span>
+                    </span>
+                </div>
+                <a th:if="${session.oturumKullanici != null}" th:href="@{/logout}" style="background-color: #dc3545; color: white; text-decoration: none; padding: 8px 16px; border-radius: 6px; font-weight: bold; font-size: 14px; box-shadow: 0 2px 4px rgba(220, 53, 69, 0.3); display: flex; align-items: center; gap: 5px;">
+                    Çıkış Yap
+                </a>
+            </div>
+        </header>
+
+        <div class="content-area">
+            <div class="card table-card">
+
+                <div class="card-header list-header">
+                    <h3>Tüm Üyeler</h3>
+
+                    <form th:action="@{/uyeler}" method="get" class="table-actions" style="display: flex; gap: 10px; align-items: center;">
+
+                        <input type="text" name="kelime" th:value="${param.kelime}" placeholder="İsim veya TC ile ara..." class="search-input">
+
+                        <select name="durum" class="filter-select" onchange="this.form.submit()">
+                            <option value="hepsi" th:selected="${param.durum == null or param.durum[0] == 'hepsi'}">Tüm Durumlar</option>
+                            <option value="aktif" th:selected="${param.durum != null and param.durum[0] == 'aktif'}">Sadece Aktifler</option>
+                            <option value="pasif" th:selected="${param.durum != null and param.durum[0] == 'pasif'}">Süresi Dolanlar</option>
+                        </select>
+
+                        <button type="submit" class="btn-action" style="padding: 8px 15px; cursor: pointer; background-color: #007bff; color: white; border: none; border-radius: 4px;">Ara</button>
+
+                    </form>
+                </div>
+
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Üye Adı</th>
+                            <th>Telefon</th>
+                            <th>Üyelik Paketi</th>
+                            <th>Kayıt Tarihi</th>
+                            <th>Bitiş Tarihi</th>
+                            <th>Durum</th>
+                            <th>İşlem</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="uye : ${uyelerListesi}">
+
+                            <td th:text="${'#' + uye.uyeId}">#1001</td>
+                            <td th:text="${uye.adSoyad}">Ahmet Yılmaz</td>
+                            <td th:text="${uye.telefon}">0555 123 4567</td>
+                            <td th:text="${uye.paketAdi}">3 Aylık Fitness</td>
+                            <td th:text="${uye.baslangicTarihi}">12.05.2026</td>
+                            <td th:text="${uye.bitisTarihi}">12.08.2026</td>
+
+                            <td>
+                                    <span th:text="${uye.durum}"
+                                          th:class="${uye.durum == 'Aktif' ? 'badge badge-success' : 'badge badge-danger'}">
+                                        Aktif
+                                    </span>
+                            </td>
+
+                            <td style="display: flex; gap: 10px;">
+                                <a th:href="@{/uyeler/duzenle/{id}(id=${uye.uyeId})}"
+                                   class="btn-action"
+                                   style="text-decoration: none; color: blue;">Düzenle</a>
+
+                                <a th:href="@{/uyeler/sil/{id}(id=${uye.uyeId})}"
+                                   onclick="return confirm('Bu üyeyi sistemden tamamen silmek istediğinize emin misiniz?')"
+                                   style="text-decoration: none; color: red; font-weight: bold;">
+                                    Sil
+                                </a>
+                            </td>
+
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination">
+                        <span class="page-info" th:text="'Sistemde kayıtlı toplam ' + ${#lists.size(uyelerListesi)} + ' üye bulunuyor.'">
+                            Sayfa 1 / 5
+                        </span>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+</div>
+</body>
+</html>

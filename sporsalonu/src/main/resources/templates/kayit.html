@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="tr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spor Salonu Takip Sistemi</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<div class="dashboard-container">
+
+    <aside class="sidebar">
+        <div class="logo">
+            <h2>DriFit</h2>
+        </div>
+        <nav class="menu">
+            <a href="/">Ana Sayfa</a>
+            <a href="/uyeler">Üye Listesi</a>
+            <a href="/kayit" class="active">Yeni Üye Kaydı</a>
+            <a href="/odemeler">Ödemeler</a>
+            <a href="/ayarlar">Ayarlar</a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <header class="top-header" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1>Yeni Üye Kaydı</h1>
+
+            <div class="header-right" style="display: flex; align-items: center; gap: 20px;">
+                <div class="user-profile" style="color: #333; font-weight: 500; font-size: 15px;">
+                    <span th:if="${session.oturumKullanici != null}">
+                        👤 <span th:text="${session.oturumKullanici.kullaniciAdi} + ' Profili'">Admin Profili</span>
+                    </span>
+                </div>
+                <a th:if="${session.oturumKullanici != null}" th:href="@{/logout}" style="background-color: #dc3545; color: white; text-decoration: none; padding: 8px 16px; border-radius: 6px; font-weight: bold; font-size: 14px; box-shadow: 0 2px 4px rgba(220, 53, 69, 0.3); display: flex; align-items: center; gap: 5px;">
+                    Çıkış Yap
+                </a>
+            </div>
+        </header>
+
+        <div class="content-area">
+
+            <div th:if="${hataMesaji}" style="color: #721c24; background-color: #f8d7da; border: 1px solid #f5c6cb; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+                <strong>Kayıt Başarısız!</strong> <span th:text="${hataMesaji}"></span>
+            </div>
+
+            <div th:if="${basariMesaji}" style="color: #155724; background-color: #d4edda; border: 1px solid #c3e6cb; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+                <strong>İşlem Tamam!</strong> <span th:text="${basariMesaji}"></span>
+            </div>
+            <div class="card" style="margin-bottom: 24px;">
+                <h2 class="form-title">Yeni Üye Kayıt Formu</h2>
+                <p class="form-subtitle">Sisteme yeni eklenecek üyenin temel bilgilerini ve paket seçimini yapın.</p>
+
+                <form th:action="@{/uye-kaydet}" method="POST" class="register-form">
+                    <div class="form-grid">
+
+                        <div class="form-group">
+                            <label for="adSoyad">Ad Soyad</label>
+                            <input type="text" id="adSoyad" name="adSoyad" placeholder="Örn: Ahmet Yılmaz" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="telefon">Telefon Numarası</label>
+                            <input type="tel" id="telefon" name="telefon" placeholder="0555 555 55 55" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="tcNo">TC Kimlik No</label>
+                            <input type="text" id="tcNo" name="tcNo" placeholder="11 Haneli TC Kimlik" maxlength="11">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="cinsiyet">Cinsiyet</label>
+                            <select id="cinsiyet" name="cinsiyet">
+                                <option value="Erkek">Erkek</option>
+                                <option value="Kadın">Kadın</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="baslangic">Başlangıç Tarihi</label>
+                            <input type="date" id="baslangic" name="baslangicTarihi" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="kanGrubu">Kan Grubu (Opsiyonel)</label>
+                            <select id="kanGrubu" name="kanGrubu">
+                                <option value="">Bilinmiyor</option>
+                                <option value="A+">A Rh+</option>
+                                <option value="A-">A Rh-</option>
+                                <option value="B+">B Rh+</option>
+                                <option value="B-">B Rh-</option>
+                                <option value="AB+">AB Rh+</option>
+                                <option value="AB-">AB Rh-</option>
+                                <option value="0+">0 Rh+</option>
+                                <option value="0-">0 Rh-</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label for="paketId">Üyelik Paketi</label>
+                            <select id="paketId" name="paketId" required>
+                                <option value="" disabled selected>Lütfen bir paket seçin...</option>
+                                <option th:each="paket : ${paketler}"
+                                        th:value="${paket.paketId}"
+                                        th:text="${paket.paketAdi} + ' (₺' + ${paket.ucret} + ')'">
+                                </option>
+                            </select>
+                        </div>
+
+                        <input type="hidden" name="antrenorId" value="1">
+
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="reset" class="btn-secondary">Temizle</button>
+                        <button type="submit" class="btn-primary">Üyeyi Kaydet</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="card table-card">
+                <div class="card-header">
+                    <h3>Son Eklenen Üyeler</h3>
+                </div>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Üye Adı</th>
+                            <th>Üyelik Paketi</th>
+                            <th>Başlangıç Tarihi</th>
+                            <th>Durum</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="abonelik : ${sonUyeler}">
+
+                            <td th:text="${abonelik.uye != null ? abonelik.uye.adSoyad : 'Bilinmeyen Üye'}">Ahmet Yılmaz</td>
+
+                            <td th:text="${abonelik.paket != null ? abonelik.paket.paketAdi : 'Paket Yok'}">3 Aylık Fitness</td>
+
+                            <td th:text="${abonelik.baslangicTarihi != null ? #temporals.format(abonelik.baslangicTarihi, 'dd.MM.yyyy') : '-'}">12.05.2026</td>
+
+                            <td>
+                                <span th:if="${abonelik.durum == 'Aktif'}" class="badge badge-success">Aktif</span>
+                                <span th:if="${abonelik.durum != 'Aktif'}" class="badge badge-danger" th:text="${abonelik.durum}">Süresi Dolmuş</span>
+                            </td>
+
+                        </tr>
+
+                        <tr th:if="${sonUyeler == null or sonUyeler.empty}">
+                            <td colspan="4" style="text-align: center; color: #777; padding: 20px;">Henüz hiç kayıt bulunmuyor.</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </main>
+</div>
+</body>
+</html>

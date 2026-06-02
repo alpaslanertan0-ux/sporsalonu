@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="tr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Şifremi Unuttum - FitTakip</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body class="login-body">
+
+<div class="login-container">
+    <div class="login-card">
+
+        <div class="login-header">
+            <h2>DriFit</h2>
+            <p>Yeni Şifre Belirleme Ekranı</p>
+        </div>
+
+        <form th:action="@{/sifre-sifirla}" method="POST" class="login-form">
+
+            <div class="form-group">
+                <label for="kullaniciAdi">Kullanıcı Adı</label>
+                <input type="text" id="kullaniciAdi" name="kullaniciAdi" placeholder="Sistemdeki kullanıcı adınız" required>
+            </div>
+
+            <div class="form-group">
+                <label for="yeniSifre">Yeni Şifreniz</label>
+                <input type="password" id="yeniSifre" name="yeniSifre" placeholder="••••••••" required>
+            </div>
+
+            <button type="submit" class="btn-primary login-btn">Şifreyi Güncelle</button>
+
+            <div style="text-align: center; margin-top: 15px;">
+                <a href="/login" style="color: #4F46E5; text-decoration: none; font-size: 14px;">Giriş Sayfasına Dön</a>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="tr" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spor Salonu Takip Sistemi</title>
+    <link rel="stylesheet" href="/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<div class="dashboard-container">
+
+    <aside class="sidebar">
+        <div class="logo">
+            <h2>DriFit</h2>
+        </div>
+        <nav class="menu">
+            <a href="/" class="active">Ana Sayfa</a>
+            <a href="/uyeler">Üye Listesi</a>
+            <a href="/kayit">Yeni Üye Kaydı</a>
+            <a href="/odemeler">Ödemeler</a>
+            <a href="/ayarlar">Ayarlar</a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <header class="top-header" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1>Gösterge Paneli</h1>
+
+            <div class="header-right" style="display: flex; align-items: center; gap: 20px;">
+                <div class="user-profile" style="color: #333; font-weight: 500; font-size: 15px;">
+                    <span th:if="${session.oturumKullanici != null}">
+                        👤 <span th:text="${session.oturumKullanici.kullaniciAdi} + ' Profili'">Admin Profili</span>
+                    </span>
+                </div>
+                <a th:if="${session.oturumKullanici != null}" th:href="@{/logout}" style="background-color: #dc3545; color: white; text-decoration: none; padding: 8px 16px; border-radius: 6px; font-weight: bold; font-size: 14px; box-shadow: 0 2px 4px rgba(220, 53, 69, 0.3); display: flex; align-items: center; gap: 5px;">
+                    Çıkış Yap
+                </a>
+            </div>
+        </header>
+
+        <div class="content-area">
+
+            <div class="stats-grid" style="margin-bottom: 24px;">
+                <div class="stat-card">
+                    <div class="stat-title">Toplam Üye</div>
+                    <div class="stat-value" th:text="${toplamUye}">0</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-title">Aktif Üyeler</div>
+                    <div class="stat-value" th:text="${aktifUye}">0</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-title">Bu Ay Bitenler</div>
+                    <div class="stat-value" th:text="${buAyBitenler}">0</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-title">Aylık Gelir</div>
+                    <div class="stat-value" th:text="'₺' + ${#numbers.formatDecimal(aylikGelir, 0, 'COMMA', 2, 'POINT')}">₺0</div>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px; margin-bottom: 24px;">
+                <div class="card" style="padding: 20px;">
+                    <h3 style="margin-bottom: 16px; color: #333;">Aylık Gelir Analizi (₺)</h3>
+                    <canvas id="gelirGrafigi" height="100"></canvas>
+                </div>
+
+                <div class="card" style="padding: 20px;">
+                    <h3 style="margin-bottom: 16px; color: #333;">Üyelik Paket Dağılımı</h3>
+                    <canvas id="paketGrafigi" height="200"></canvas>
+                </div>
+            </div>
+
+            <div class="card table-card">
+                <div class="card-header">
+                    <h3>Son Eklenen Üyeler</h3>
+                </div>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Üye Adı</th>
+                            <th>Üyelik Paketi</th>
+                            <th>Başlangıç Tarihi</th>
+                            <th>Durum</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="abonelik : ${sonUyeler}">
+
+                            <td th:text="${abonelik.uye != null ? abonelik.uye.adSoyad : 'Bilinmeyen Üye'}">Ahmet Yılmaz</td>
+
+                            <td th:text="${abonelik.paket != null ? abonelik.paket.paketAdi : 'Paket Yok'}">3 Aylık Fitness</td>
+
+                            <td th:text="${abonelik.baslangicTarihi != null ? #temporals.format(abonelik.baslangicTarihi, 'dd.MM.yyyy') : '-'}">12.05.2026</td>
+
+                            <td>
+                                <span th:if="${abonelik.durum == 'Aktif'}" class="badge badge-success">Aktif</span>
+                                <span th:if="${abonelik.durum != 'Aktif'}" class="badge badge-danger" th:text="${abonelik.durum}">Süresi Dolmuş</span>
+                            </td>
+
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+</div>
+
+<script>
+    fetch('/api/dashboard/grafik-verileri')
+        .then(response => response.json())
+        .then(data => {
+
+            const gelirAylar = Object.keys(data.gelirler);
+            const gelirTutarlar = Object.values(data.gelirler);
+
+            const gelirCanvas = document.getElementById('gelirGrafigi').getContext('2d');
+            new Chart(gelirCanvas, {
+                type: 'bar',
+                data: {
+                    labels: gelirAylar,
+                    datasets: [{
+                        label: 'Aylık Tahsilat (₺)',
+                        data: gelirTutarlar,
+                        backgroundColor: '#4CAF50',
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+
+            const paketIsimleri = Object.keys(data.paketler);
+            const paketAdetleri = Object.values(data.paketler);
+
+            const paketCanvas = document.getElementById('paketGrafigi').getContext('2d');
+            new Chart(paketCanvas, {
+                type: 'doughnut',
+                data: {
+                    labels: paketIsimleri,
+                    datasets: [{
+                        data: paketAdetleri,
+                        backgroundColor: [
+                            '#FF6384',
+                            '#36A2EB',
+                            '#FFCE56',
+                            '#4BC0C0',
+                            '#9966FF',
+                            '#FF9F40'
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    cutout: '70%',
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+
+        })
+        .catch(error => console.error('Grafik verileri yüklenirken hata oluştu:', error));
+</script>
+</body>
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="tr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spor Salonu Takip Sistemi</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<div class="dashboard-container">
+
+    <aside class="sidebar">
+        <div class="logo">
+            <h2>DriFit</h2>
+        </div>
+        <nav class="menu">
+            <a href="/">Ana Sayfa</a>
+            <a href="/uyeler">Üye Listesi</a>
+            <a href="/kayit" class="active">Yeni Üye Kaydı</a>
+            <a href="/odemeler">Ödemeler</a>
+            <a href="/ayarlar">Ayarlar</a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <header class="top-header">
+            <h1>Gösterge Paneli</h1>
+            <div class="user-profile">Admin Profili</div>
+        </header>
+
+        <div class="content-area">
+            <div class="card">
+                <h2 class="form-title">Üye Bilgilerini Düzenle</h2>
+                <p class="form-subtitle">Sistemde kayıtlı üyenin bilgilerini, başlangıç tarihini ve üyelik paketini güncelleyin.</p>
+
+                <form th:action="@{/uye-guncelle}" method="POST" class="register-form">
+
+                    <input type="hidden" name="uyeId" th:value="${uye.uyeId}">
+
+                    <div class="form-grid">
+
+                        <div class="form-group">
+                            <label for="adSoyad">Ad Soyad</label>
+                            <input type="text" id="adSoyad" name="adSoyad" th:value="${uye.adSoyad}" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="telefon">Telefon Numarası</label>
+                            <input type="tel" id="telefon" name="telefon" th:value="${uye.telefon}" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="tcNo">TC Kimlik No</label>
+                            <input type="text" id="tcNo" name="tcNo" th:value="${uye.tcNo}" maxlength="11">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="baslangic">Başlangıç Tarihi</label>
+                            <input type="date" id="baslangic" name="baslangic"
+                                   th:value="${aktifAbonelik != null ? aktifAbonelik.baslangicTarihi : ''}" required>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label for="paketId">Üyelik Paketi</label>
+                            <select id="paketId" name="paketId" required>
+                                <option value="" disabled>Lütfen bir paket seçin...</option>
+                                <option th:each="paket : ${paketler}"
+                                        th:value="${paket.paketId}"
+                                        th:text="${paket.paketAdi}"
+                                        th:selected="${aktifAbonelik != null && aktifAbonelik.paket != null && aktifAbonelik.paket.paketId == paket.paketId}">
+                                </option>
+                            </select>
+                        </div>
+
+                        <input type="hidden" name="antrenorId" value="1">
+
+                    </div>
+
+                    <div class="form-actions">
+                        <a href="/uyeler" class="btn-secondary" style="text-decoration: none; text-align: center; line-height: 40px;">İptal Et</a>
+                        <button type="submit" class="btn-primary">Değişiklikleri Kaydet</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="card table-card">
+            <div class="card-header">
+                <h3>Son Eklenen Üyeler</h3>
+            </div>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Üye Adı</th>
+                        <th>Üyelik Paketi</th>
+                        <th>Başlangıç Tarihi</th>
+                        <th>Durum</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="abonelik : ${sonUyeler}">
+                        <td th:text="${abonelik.uye != null ? abonelik.uye.adSoyad : 'Bilinmeyen Üye'}">Üye Adı</td>
+                        <td th:text="${abonelik.paket != null ? abonelik.paket.paketAdi : 'Paket Atanmamış'}">Üyelik Paketi</td>
+                        <td th:text="${abonelik.baslangicTarihi}">Başlangıç Tarihi</td>
+                        <td>
+                            <span th:class="${abonelik.durum == 'Aktif' ? 'badge badge-success' : 'badge badge-danger'}"
+                                  th:text="${abonelik.durum}">
+                                Durum
+                            </span>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(sonUyeler)}">
+                        <td colspan="4" style="text-align: center; color: #6b7280;">Sistemde kayıtlı üye bulunamadı.</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+</div>
+</body>
+</html>

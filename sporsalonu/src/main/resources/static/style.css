@@ -1,0 +1,619 @@
+/* Genel Sıfırlama ve Font */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #F3F4F6; /* Açık gri temel arka plan */
+    color: #1F2937; /* Ana metin rengi */
+}
+
+/* Ana İskelet Düzeni (Flexbox) */
+.dashboard-container {
+    display: flex;
+    height: 100vh; /* Tüm ekran yüksekliğini kapla */
+}
+
+/* Sol Menü (Sidebar) Tasarımı */
+.sidebar {
+    width: 260px;
+    background-color: #FFFFFF; /* Beyaz menü alanı */
+    border-right: 1px solid #E5E7EB; /* İnce bir sınır çizgisi */
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar .logo h2 {
+    color: #3B82F6; /* Vurgu rengi ile Logo */
+    margin-bottom: 30px;
+    font-size: 24px;
+}
+
+/* Ana İçerik Alanı Düzeni */
+.main-content {
+    flex: 1; /* Kalan tüm genişliği kapla */
+    display: flex;
+    flex-direction: column;
+}
+
+/* Üst Başlık (Header) Tasarımı */
+.top-header {
+    height: 70px;
+    background-color: #FFFFFF; /* Beyaz üst çubuk */
+    border-bottom: 1px solid #E5E7EB;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 30px;
+}
+
+.top-header h1 {
+    font-size: 20px;
+    color: #1F2937;
+}
+
+/* İçerik Kutuları (Cards) Alanı */
+.content-area {
+    padding: 30px;
+    flex: 1;
+    overflow-y: auto; /* İçerik uzarsa kaydırma çubuğu çıkar */
+}
+
+.card {
+    background-color: #FFFFFF; /* İçerikler için beyaz zemin */
+    border-radius: 8px; /* Yumuşak köşeler */
+    padding: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1); /* Hafif ve ferah bir derinlik gölgesi */
+}/* Menü Linkleri Genel Görünümü */
+.menu {
+    display: flex;
+    flex-direction: column;
+    gap: 8px; /* Butonlar arasındaki dikey boşluk */
+}
+
+.menu a {
+    text-decoration: none; /* Linklerin altındaki varsayılan çizgiyi kaldırır */
+    color: #6B7280; /* İkincil yumuşak gri rengimiz */
+    padding: 12px 16px; /* İç boşluklar (buton gibi görünmesi için) */
+    border-radius: 8px; /* Yuvarlak köşeler */
+    font-size: 15px;
+    font-weight: 500;
+    transition: all 0.2s ease-in-out; /* Renk değişiminin aniden değil yumuşak olmasını sağlar */
+}
+
+/* Fareyle Linkin Üzerine Gelindiğinde (Hover Efekti) */
+.menu a:hover {
+    background-color: #F3F4F6; /* Arka plana çok açık bir gri ekle */
+    color: #3B82F6; /* Yazıyı vurgu rengimiz olan mavi yap */
+}
+
+/* O An Bulunulan (Aktif) Sayfa Görünümü */
+.menu a.active {
+    background-color: #EFF6FF; /* Çok açık mavi, ferah bir zemin */
+    color: #3B82F6; /* Yazı rengi mavi */
+    font-weight: 600; /* Yazı biraz daha kalın */
+}/* Özet Bilgi Kartları (Grid Yapısı) */
+.stats-grid {
+    display: grid;
+    /* Yan yana 4 sütun oluşturur, ekran küçülürse alt satıra atar */
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+    gap: 20px; /* Kartlar arasındaki boşluk */
+    margin-bottom: 30px; /* Altına gelecek içeriklerle arasına mesafe koyar */
+}
+
+.stat-card {
+    background-color: #FFFFFF;
+    padding: 24px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    border-left: 4px solid #3B82F6; /* Sol tarafa sportif, şık bir mavi çizgi */
+    transition: transform 0.2s ease; /* Yukarı kayma efekti için hazırlık */
+}
+
+/* Fareyle Kartın Üzerine Gelindiğinde */
+.stat-card:hover {
+    transform: translateY(-5px); /* Kartı hafifçe yukarı kaldırır */
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1); /* Gölgeyi belirginleştirir */
+}
+
+.stat-card .stat-title {
+    color: #6B7280; /* Yumuşak gri alt başlık */
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 8px; /* Başlık ile rakam arası boşluk */
+}
+
+.stat-card .stat-value {
+    color: #1F2937; /* Koyu antrasit rakam */
+    font-size: 28px;
+    font-weight: 700;
+}/* Tablo Kartı Tasarımı */
+.table-card {
+    padding: 0; /* İçerik kenarlara tam otursun diye kartın iç boşluğunu sıfırlıyoruz */
+    overflow: hidden; /* Köşelerin taşmasını önler */
+}
+
+.card-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid #E5E7EB; /* Başlık ile tablo arası ince çizgi */
+}
+
+.card-header h3 {
+    font-size: 18px;
+    color: #1F2937;
+    font-weight: 600;
+}
+
+/* Tablo Yapısı */
+.table-wrapper {
+    width: 100%;
+    overflow-x: auto; /* Ekran çok küçülürse tablonun taşmasını önler */
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse; /* Çift çizgileri engeller, temiz bir görünüm verir */
+    text-align: left;
+}
+
+/* Tablo Başlık Alanı */
+th {
+    background-color: #F9FAFB; /* Başlık arka planı için çok hafif gri */
+    color: #6B7280; /* Yumuşak gri yazı */
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase; /* Başlık harflerini büyütür */
+    letter-spacing: 0.5px;
+    padding: 14px 24px;
+    border-bottom: 1px solid #E5E7EB;
+}
+
+/* Tablo Satırları (Veriler) */
+td {
+    padding: 16px 24px;
+    color: #1F2937;
+    font-size: 15px;
+    border-bottom: 1px solid #F3F4F6;
+}
+
+/* Satırların Üzerine Gelindiğinde Hafif Renk Değişimi */
+tbody tr:hover {
+    background-color: #F9FAFB;
+}
+
+/* Son satırın altındaki çizgiyi kaldır (çirkin durmasın diye) */
+tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Aktif / Süresi Dolmuş Rozetleri (Badges) */
+.badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 99px; /* Tam yuvarlak köşeler */
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* Aktif Üye Rozeti (Yeşil Temalı) */
+.badge-success {
+    background-color: #DCFCE7; /* Açık yeşil arka plan */
+    color: #15803D; /* Koyu yeşil yazı */
+}
+
+/* Süresi Dolmuş Üye Rozeti (Kırmızı Temalı) */
+.badge-danger {
+    background-color: #FEE2E2; /* Açık kırmızı arka plan */
+    color: #B91C1C; /* Koyu kırmızı yazı */
+}/* Form Başlıkları */
+.form-title {
+    font-size: 20px;
+    color: #1F2937;
+    margin-bottom: 4px;
+}
+
+.form-subtitle {
+    font-size: 14px;
+    color: #6B7280;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #E5E7EB;
+}
+
+/* Form Grid Yapısı (Yan yana 2 kolon) */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* İki eşit sütun */
+    gap: 20px;
+}
+
+/* Tam genişlik kaplaması gereken alanlar için */
+.full-width {
+    grid-column: 1 / -1;
+}
+
+/* Form Elemanları */
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 8px;
+}
+
+.form-group input, 
+.form-group select {
+    padding: 12px 16px;
+    border: 1px solid #D1D5DB; /* Açık gri kenarlık */
+    border-radius: 8px;
+    font-size: 15px;
+    color: #1F2937;
+    background-color: #F9FAFB;
+    transition: all 0.2s ease;
+}
+
+/* Inputa tıklandığında (Focus) */
+.form-group input:focus, 
+.form-group select:focus {
+    outline: none; /* Varsayılan siyah/mavi çerçeveyi kaldır */
+    border-color: #3B82F6; /* Vurgu rengimiz */
+    background-color: #FFFFFF;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); /* Etrafında yumuşak mavi bir parlama */
+}
+
+/* Butonlar Alanı */
+.form-actions {
+    margin-top: 30px;
+    display: flex;
+    justify-content: flex-end; /* Butonları sağa yasla */
+    gap: 12px;
+}
+
+/* Genel Buton Stili */
+button {
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s ease;
+}
+
+/* Birincil (Kaydet) Butonu */
+.btn-primary {
+    background-color: #3B82F6;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #2563EB; /* Üzerine gelince biraz daha koyu mavi */
+}
+
+/* İkincil (Temizle) Butonu */
+.btn-secondary {
+    background-color: #F3F4F6;
+    color: #4B5563;
+}
+
+.btn-secondary:hover {
+    background-color: #E5E7EB;
+}/* --- GİRİŞ (LOGIN) EKRANI STİLLERİ --- */
+
+/* Tüm sayfayı kaplayan ve içeriği ortalayan yapı */
+.login-body {
+    background-color: #F3F4F6;
+    display: flex;
+    justify-content: center; /* Yatay eksende ortala */
+    align-items: center; /* Dikey eksende ortala */
+    height: 100vh;
+    margin: 0;
+}
+
+.login-container {
+    width: 100%;
+    max-width: 400px; /* Kartın çok genişlemesini engelle */
+    padding: 20px;
+}
+
+.login-card {
+    background-color: #FFFFFF;
+    padding: 40px 30px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1); /* Diğer kartlardan daha derin, vurgulu bir gölge */
+    border-top: 5px solid #3B82F6; /* Şık bir üst çizgi detayı */
+}
+
+.login-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.login-header h2 {
+    color: #3B82F6;
+    font-size: 28px;
+    margin-bottom: 8px;
+}
+
+.login-header p {
+    color: #6B7280;
+    font-size: 14px;
+}
+
+/* Giriş formundaki elemanların arası */
+.login-form .form-group {
+    margin-bottom: 20px;
+}
+
+/* Beni Hatırla ve Şifremi Unuttum satırı */
+.login-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    font-size: 14px;
+}
+
+.remember-me {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #4B5563;
+    cursor: pointer;
+}
+
+.forgot-password {
+    color: #3B82F6;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.forgot-password:hover {
+    color: #2563EB;
+    text-decoration: underline;
+}
+
+/* Giriş butonu kartın tam genişliğini kaplasın */
+.login-btn {
+    width: 100%;
+    padding: 14px;
+    font-size: 16px;
+}/* --- ÜYE LİSTESİ SAYFASI EKSTRALARI --- */
+
+/* Tablo Başlığı ve Arama/Filtre Alanı */
+.list-header {
+    display: flex;
+    justify-content: space-between; /* Başlığı sola, aramayı sağa yaslar */
+    align-items: center;
+    flex-wrap: wrap; /* Ekran küçülürse alt alta geçmelerini sağlar */
+    gap: 15px;
+}
+
+.table-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.search-input, .filter-select {
+    padding: 8px 12px;
+    border: 1px solid #D1D5DB;
+    border-radius: 6px;
+    font-size: 14px;
+    outline: none;
+}
+
+.search-input:focus, .filter-select:focus {
+    border-color: #3B82F6;
+}
+
+/* Küçük İşlem (Düzenle) Butonu */
+.btn-action {
+    padding: 6px 12px;
+    background-color: #F3F4F6;
+    color: #374151;
+    border: none;
+    border-radius: 4px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-action:hover {
+    background-color: #E5E7EB;
+    color: #3B82F6;
+}
+
+/* Sayfalama (Pagination) Alt Kısım */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    gap: 15px;
+    border-top: 1px solid #E5E7EB;
+}
+
+.page-btn {
+    padding: 8px 16px;
+    background-color: white;
+    border: 1px solid #D1D5DB;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.page-btn:hover {
+    background-color: #F9FAFB;
+}
+
+.page-info {
+    font-size: 14px;
+    color: #6B7280;
+}/* --- ÖDEMELER SAYFASI EKSTRALARI --- */
+
+/* Özet kartlarına yeşil ve kırmızı yan çizgiler */
+.payment-stats .border-green {
+    border-left-color: #10B981; /* Yeşil vurgu çizgisi */
+}
+
+.payment-stats .border-red {
+    border-left-color: #EF4444; /* Kırmızı vurgu çizgisi */
+}
+
+/* Rakamlara özel renkler */
+.text-green {
+    color: #10B981 !important;
+}
+
+.text-red {
+    color: #EF4444 !important;
+}
+
+/* Bekleyen Ödeme Rozeti (Sarı Temalı) */
+.badge-warning {
+    background-color: #FEF3C7; /* Açık sarı arka plan */
+    color: #B45309; /* Koyu sarı / turuncu yazı */
+}/* --- AYARLAR SAYFASI STİLLERİ --- */
+
+/* Ayar Kartları Grid Yapısı */
+.settings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+}
+
+/* Ayar Satırları (Yazı solda, buton sağda) */
+.setting-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 0;
+    border-bottom: 1px solid #E5E7EB;
+}
+
+.setting-row:last-child {
+    border-bottom: none; /* Son satırın altındaki çizgiyi kaldır */
+}
+
+/* Şık Aç/Kapat Butonu (Toggle Switch) */
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+}
+
+/* Orijinal checkbox'ı gizle */
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+/* Arka plan slider alanı */
+.toggle-switch .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: #D1D5DB; /* Kapalıyken gri */
+    transition: .3s;
+    border-radius: 24px;
+}
+
+/* İçindeki yuvarlak nokta */
+.toggle-switch .slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .3s;
+    border-radius: 50%;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+
+/* Checkbox işaretlendiğinde (Açıkken) */
+.toggle-switch input:checked + .slider {
+    background-color: #3B82F6; /* Açıkken mavi */
+}
+
+/* Checkbox işaretlendiğinde noktayı sağa kaydır */
+.toggle-switch input:checked + .slider:before {
+    transform: translateX(20px);
+}
+/* Sidebar Kullanıcı Paneli Stilleri */
+.sidebar-user-panel {
+    padding: 20px 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 15px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 15px;
+}
+
+.user-avatar {
+    font-size: 24px;
+    background: rgba(79, 70, 229, 0.2);
+    padding: 8px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.user-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.welcome-msg {
+    font-size: 11px;
+    color: #9CA3AF;
+    margin: 0;
+}
+
+.username {
+    font-size: 15px;
+    color: #F3F4F6;
+    margin: 2px 0 0 0;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+/* Çıkış Yap Butonu */
+.btn-logout {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 10px;
+    background: #EF4444;
+    color: white;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.btn-logout:hover {
+    background: #DC2626;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+}
