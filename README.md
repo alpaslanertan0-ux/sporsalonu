@@ -101,6 +101,8 @@ Veritabanında 5N kurallarına uygun, birbiriyle ilişkili 7 tablo bulunmaktadı
   <img width="745" height="762" alt="image" src="https://github.com/user-attachments/assets/7be59583-cd8d-444e-9073-d84cfa34eaba" />
 
 
+
+
 ## 7. Projenin Yüklenmesi ve Çalıştırılması
 Sistemi ayağa kaldırmak için aşağıdaki adımları sırasıyla uygulayınız:
 1. GitHub deposundaki projeyi bilgisayarınıza klonlayın: `https://github.com/alpaslanertan0-ux/sporsalonu`.
