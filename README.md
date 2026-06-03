@@ -32,6 +32,59 @@ Projenin temel işleyiş ve algoritma adımları şu şekildedir:
 4. **Ödeme Akışı:** Aktif abonelik üzerinden ödeme alınır -> Ödemeler tablosuna kayıt düşülür -> Muhasebe View'ları anlık olarak güncellenir.
 5. **Durum Güncelleme:** Abonelik süresi biten veya iptal edilen üyeler, Trigger vasıtasıyla otomatik olarak "Pasif" duruma çekilir.
 
+### Akış Şeması
+
+FitTakip Spor Salonu Yönetim Sistemi'nin temel kullanıcı işlemleri, veri tabanı etkileşimleri ve algoritma yönlendirmeleri aşağıdaki akış şemasında görselleştirilmiştir.
+
+```mermaid
+graph TD
+    A[Başlangıç] --> B{Oturum Açık mı / Çerez Var mı?}
+    B -- Evet --> C[Ana Sayfa / Dashboard]
+    B -- Hayır --> D[Login Sayfası]
+    
+    D --> E{Kullanıcı Adı ve Şifre Doğru mu?}
+    E -- Hayır --> D
+    E -- Evet --> C
+    
+    C --> F{Modül Seçimi}
+    
+    %% Üye İşlemleri Akışı
+    F --> G[Üye Yönetimi Modülü]
+    G --> G1[Yeni Üye Kaydı]
+    G --> G2[Üye Listeleme ve Filtreleme]
+    G --> G3[Üye Silme]
+    
+    G1 --> G1a[Üye Bilgileri ve Paket Seçimi]
+    G1a --> G1b[Uyeler Tablosuna Insert İşlemi]
+    G1b --> G1c[Abonelikler Tablosuna Insert İşlemi]
+    G1c --> G1d[Trigger: Bitiş Tarihi Otomatik Hesaplanır]
+    
+    G3 --> G3a[Seçilen Üyeye Ait Ödemeleri Sil]
+    G3a --> G3b[Seçilen Üyeye Ait Abonelikleri Sil]
+    G3b --> G3c[Üye Kaydını Sistemden Tamamen Sil]
+
+    %% Ödeme İşlemleri Akışı
+    F --> H[Finans ve Ödeme Modülü]
+    H --> H1[Finans Raporlarını Görüntüle]
+    H --> H2[Yeni Ödeme Al]
+    
+    H2 --> H2a[Aktif Abonelik Seç ve Tutar Gir]
+    H2a --> H2b[Odemeler Tablosuna Kaydet]
+    H2b --> H2c[Sistem Tarihi Otomatik Atanır]
+    
+    %% Ayarlar Akışı
+    F --> I[Sistem Ayarları Modülü]
+    I --> I1[Genel Bilgileri Güncelle]
+    I --> I2[Sistem Tercihlerini Değiştir]
+    I --> I3[Admin Şifresini Güncelle]
+    
+    F --> J[Çıkış Yap]
+    J --> Z[Session ve Çerezleri Temizle, Login'e Dön]
+    
+    style A fill:#f9f,stroke:#333,stroke-width:2px
+    style C fill:#bbf,stroke:#333,stroke-width:2px
+    style Z fill:#f9f,stroke:#333,stroke-width:2px
+
 ## 5. Yazılım Mimarisi ve Geliştirme Ortamı
 Proje, MVC (Model-View-Controller) mimarisi prensiplerine uygun olarak modüler bir yapıda kodlanmıştır.
 * **Geliştirme Ortamı:** IntelliJ IDEA (Java Spring Boot), Microsoft SQL Server Management Studio (Veritabanı), Web Tarayıcı.
