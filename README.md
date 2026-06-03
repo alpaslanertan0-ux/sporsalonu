@@ -32,10 +32,6 @@ Projenin temel işleyiş ve algoritma adımları şu şekildedir:
 4. **Ödeme Akışı:** Aktif abonelik üzerinden ödeme alınır -> Ödemeler tablosuna kayıt düşülür -> Muhasebe View'ları anlık olarak güncellenir.
 5. **Durum Güncelleme:** Abonelik süresi biten veya iptal edilen üyeler, Trigger vasıtasıyla otomatik olarak "Pasif" duruma çekilir.
 
-### Akış Şeması
-
-FitTakip Spor Salonu Yönetim Sistemi'nin temel kullanıcı işlemleri, veri tabanı etkileşimleri ve algoritma yönlendirmeleri aşağıdaki akış şemasında görselleştirilmiştir.
-
 ```mermaid
 graph TD
     A[Başlangıç] --> B{Oturum Açık mı / Çerez Var mı?}
@@ -84,6 +80,7 @@ graph TD
     style A fill:#f9f,stroke:#333,stroke-width:2px
     style C fill:#bbf,stroke:#333,stroke-width:2px
     style Z fill:#f9f,stroke:#333,stroke-width:2px
+```
 
 ## 5. Yazılım Mimarisi ve Geliştirme Ortamı
 Proje, MVC (Model-View-Controller) mimarisi prensiplerine uygun olarak modüler bir yapıda kodlanmıştır.
