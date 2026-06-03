@@ -101,9 +101,12 @@ Veritabanında 5N kurallarına uygun, birbiriyle ilişkili 7 tablo bulunmaktadı
   <img width="745" height="762" alt="image" src="https://github.com/user-attachments/assets/7be59583-cd8d-444e-9073-d84cfa34eaba" />
 
 
+## 7.Arayüz Görselleri
+
+<img width="1920" height="912" alt="Ekran görüntüsü 2026-06-03 200832" src="https://github.com/user-attachments/assets/764c0dc7-479b-40a2-84d7-4f09f3ba5175" />
 
 
-## 7. Projenin Yüklenmesi ve Çalıştırılması
+## 8. Projenin Yüklenmesi ve Çalıştırılması
 Sistemi ayağa kaldırmak için aşağıdaki adımları sırasıyla uygulayınız:
 1. GitHub deposundaki projeyi bilgisayarınıza klonlayın: `https://github.com/alpaslanertan0-ux/sporsalonu`.
 2. MSSQL Server Management Studio'yu açın.
@@ -113,7 +116,7 @@ Sistemi ayağa kaldırmak için aşağıdaki adımları sırasıyla uygulayını
 6. Tarayıcınızdan `http://localhost:8080` adresine gidin.
 7. Sistemde tanımlı test kullanıcısı ile giriş yapın (Örn: Kullanıcı Adı: admin_kaan, Şifre: hash_admin123_abc123).
 
-## 8. Referanslar
+## 9. Referanslar
 * TBL331 Veritabanı Yönetim Sistemleri Ders Notları
 * Spring Boot Resmi Dokümantasyonu (Geliştirme ve Repository Yapıları)
 * Chart.js Resmi Dokümantasyonu (Grafik ve Veri Görselleştirme)
