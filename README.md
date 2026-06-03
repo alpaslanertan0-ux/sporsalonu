@@ -98,6 +98,9 @@ Veritabanında 5N kurallarına uygun, birbiriyle ilişkili 7 tablo bulunmaktadı
 * **Abonelikler - Odemeler (1:N):** Bir abonelik süreci için birden fazla ödeme işlemi (taksit, gecikme vb.) yapılabilir.
 * Diğer bağımsız tablolar: `SistemKullanicilari` ve `sistem_ayarlari`.
 
+  <img width="745" height="762" alt="image" src="https://github.com/user-attachments/assets/7be59583-cd8d-444e-9073-d84cfa34eaba" />
+
+
 ## 7. Projenin Yüklenmesi ve Çalıştırılması
 Sistemi ayağa kaldırmak için aşağıdaki adımları sırasıyla uygulayınız:
 1. GitHub deposundaki projeyi bilgisayarınıza klonlayın: `https://github.com/alpaslanertan0-ux/sporsalonu`.
