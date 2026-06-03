@@ -101,9 +101,12 @@ Veritabanında 5N kurallarına uygun, birbiriyle ilişkili 7 tablo bulunmaktadı
   <img width="745" height="762" alt="image" src="https://github.com/user-attachments/assets/7be59583-cd8d-444e-9073-d84cfa34eaba" />
 
 
-## 7.Arayüz Görselleri
+## 7.Arayüz 
 
-<img width="1920" height="912" alt="Ekran görüntüsü 2026-06-03 200832" src="https://github.com/user-attachments/assets/764c0dc7-479b-40a2-84d7-4f09f3ba5175" />
+<img width="1920" height="863" alt="Ekran görüntüsü 2026-06-03 200711" src="https://github.com/user-attachments/assets/e1421337-2707-483b-86e8-f5ea7e49f837" />
+<img width="1920" height="918" alt="Ekran görüntüsü 2026-06-03 200810" src="https://github.com/user-attachments/assets/58a1085c-550c-475d-8b4d-5ab1a9059b77" />
+
+
 
 
 ## 8. Projenin Yüklenmesi ve Çalıştırılması
